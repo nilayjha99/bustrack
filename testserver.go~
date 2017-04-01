@@ -3,11 +3,12 @@ package bustrack
 import (
 	"net/http"
 
-	"github.com/labstack/echo"
 	"strconv"
+
+	"github.com/labstack/echo"
 )
 
-var users map[int]string{}
+var users map[int]string
 
 func main() {
 	//create a new instance of echo
