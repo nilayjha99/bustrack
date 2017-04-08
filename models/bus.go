@@ -11,6 +11,8 @@ import (
 type Bus struct {
 	Busid int
 	Venid int
+	//VehicleNo
+	//Tripid
 }
 
 //to execute normal insert queries

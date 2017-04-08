@@ -4,7 +4,8 @@ import (
 	"bustrack/tools"
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
+
+	_ "github.com/lib/pq" //for postgres driver
 )
 
 const (
@@ -15,24 +16,28 @@ const (
 	dbname   = "bustrack"
 )
 
-var db *sql.DB
+// database variable
+var DB *sql.DB
 var err error
 
-func GetDB() *sql.DB {
-	if db == nil {
+//GetDB get the database conection
+func init() {
+	if DB == nil {
 		connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 			host, port, user, password, dbname)
 
-		db, err = sql.Open("postgres", connectionString)
+		DB, err = sql.Open("postgres", connectionString)
 		if err != nil {
-			utils.PanicIf(err)
+			tools.PanicIf(err)
 		}
 	}
-
-	return db
+	fmt.Println("You connected to your database.")
+	//return DB
 }
 
+//CloseDB close the database conection
 func CloseDB(db *sql.DB) {
 	err = db.Close()
-	utils.PanicIf(err)
+	fmt.Println("You Closed to your database.")
+	tools.PanicIf(err)
 }

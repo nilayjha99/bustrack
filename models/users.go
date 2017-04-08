@@ -9,25 +9,25 @@ import (
 
 //Users struct for crud
 type Users struct {
-	Userid         int
-	Email          string
-	Password       string
-	Organizationid int
+	Userid   int
+	Email    string
+	Password string
+	Orgid    int
 }
 
-//to execute normal insert queries
-func insertUser(db *sql.DB, user *Users) (sql.Result, error) {
+//InsertUser to execute normal insert queries
+func InsertUser(db *sql.DB, user *Users) (sql.Result, error) {
 	return db.Exec(
-		fmt.Sprintf("insert into users(email, password,  organization_id) values(%s,%s,%d)",
+		fmt.Sprintf("insert into users(email, password,  organization_id) values('%s','%s',%d)",
 			user.Email,
 			user.Password,
-			user.Organizationid,
+			user.Orgid,
 		),
 	)
 }
 
-//to delete selected entry
-func deleteUser(db *sql.DB, userid int) (sql.Result, error) {
+//DeleteUser to delete selected entry
+func DeleteUser(db *sql.DB, userid int) (sql.Result, error) {
 	if userid == -1 {
 		return db.Exec(fmt.Sprintf("truncate table users"))
 	}
@@ -36,22 +36,23 @@ func deleteUser(db *sql.DB, userid int) (sql.Result, error) {
 
 }
 
-//to get selected entry
-func getUsers(db *sql.DB, userid int) (*sql.Rows, error) {
+//GetUsers to get selected entry
+func GetUsers(db *sql.DB, userid int) (*sql.Rows, error) {
 	if userid == -1 {
-		return db.Query(fmt.Sprintf("select *from users"))
+		return db.Query(fmt.Sprintf("select * from users"))
 	}
-	return db.Query(fmt.Sprintf("select *from users where user_id=%d", userid))
+	return db.Query(fmt.Sprintf("select * from users where user_id=%d", userid))
 }
 
-func getUserOrg(db *sql.DB, orgid, userid int) (*sql.Rows, error) {
+//GetUserOrg get the usr by organization
+func GetUserOrg(db *sql.DB, orgid, userid int) (*sql.Rows, error) {
 	if orgid == -1 {
-		return db.Query(fmt.Sprintf("select *from route where organization_id=%d", orgid))
+		return db.Query(fmt.Sprintf("select * from route where organization_id=%d", orgid))
 	}
-	return db.Query(fmt.Sprintf("select *from users where user_id=%d AND organization_id=%d", userid, orgid))
+	return db.Query(fmt.Sprintf("select * from users where user_id=%d AND organization_id=%d", userid, orgid))
 }
 
-//to update selected entry
-func updateUsers(db *sql.DB, query string) (sql.Result, error) {
+//UpdateUsers to update selected entry
+func UpdateUsers(db *sql.DB, query string) (sql.Result, error) {
 	return db.Exec(query)
 }

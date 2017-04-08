@@ -9,29 +9,29 @@ import (
 
 //Organization struct for crud
 type Organization struct {
-	Orgid    int
-	Email    string
-	Name     string
-	Address  string
-	Password string
-	Contact  string
+	Orgid    int    `json:"orgid"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Password string `json:"password"`
+	Contact  string `json:"contact"`
 }
 
-//to execute normal insert queries
-func insertOrg(db *sql.DB, org *Organization) (sql.Result, error) {
-	return db.Exec(
-		fmt.Sprintf("insert into organization(email, name, address, password, contact) values(%s,%s,%s,%s,%s)",
-			org.Email,
-			org.Name,
-			org.Address,
-			org.Password,
-			org.Contact,
-		),
+//InsertOrg to execute normal insert queries
+func InsertOrg(db *sql.DB, org *Organization) (sql.Result, error) {
+	query := fmt.Sprintf("insert into organization(email, name, address, password,contact) values('%s','%s','%s','%s','%s')",
+		org.Email,
+		org.Name,
+		org.Address,
+		org.Password,
+		org.Contact,
 	)
+	fmt.Println(query)
+	return db.Exec(query)
 }
 
-//to delete selected entry
-func deleteOrg(db *sql.DB, orgid int) (sql.Result, error) {
+//DeleteOrg to delete selected entry
+func DeleteOrg(db *sql.DB, orgid int) (sql.Result, error) {
 	if orgid == -1 {
 		return db.Exec(fmt.Sprintf("truncate table organization"))
 	}
@@ -39,16 +39,17 @@ func deleteOrg(db *sql.DB, orgid int) (sql.Result, error) {
 	return db.Exec(fmt.Sprintf("delete from organization where organization_id=%d", orgid))
 }
 
-//to get selected entry
-func getOrg(db *sql.DB, orgid int) (*sql.Rows, error) {
+//GetOrg to get selected entry
+func GetOrg(db *sql.DB, orgid int) (*sql.Rows, error) {
 	if orgid == -1 {
 		return db.Query(fmt.Sprintf("select *from organization"))
 	}
-	return db.Query(fmt.Sprintf("select *from organization where organization_id=%d", orgid))
+	return db.Query(fmt.Sprintf("select * from organization where organization_id=%d", orgid))
 }
 
-//to update selected entry
-func updateOrg(db *sql.DB, query string) (sql.Result, error) {
+//UpdateOrg to update selected entry
+func UpdateOrg(db *sql.DB, query string) (sql.Result, error) {
+	fmt.Println(query)
 	return db.Exec(query)
 }
 

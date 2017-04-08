@@ -18,22 +18,22 @@ type Driver struct {
 	Contact  string
 }
 
-//to execute normal insert queries
-func insertDriver(db *sql.DB, dr *Driver) (sql.Result, error) {
-	return db.Exec(
-		fmt.Sprintf("insert into driver(email, vendor_id,name ,address,password, contact) values(%s,%d,%s,%s,%s,%s)",
-			dr.Email,
-			dr.Vendorid,
-			dr.Name,
-			dr.Address,
-			dr.Password,
-			dr.Contact,
-		),
+//InsertDriver to execute normal insert queries
+func InsertDriver(db *sql.DB, dr *Driver) (sql.Result, error) {
+	query := fmt.Sprintf("insert into driver(email, vendor_id, name, address, password, contact) values('%s','%d','%s','%s','%s','%s')",
+		dr.Email,
+		dr.Vendorid,
+		dr.Name,
+		dr.Address,
+		dr.Password,
+		dr.Contact,
 	)
+	fmt.Println(query)
+	return db.Exec(query)
 }
 
-//to delete selected entry
-func deleteDriver(db *sql.DB, drid int) (sql.Result, error) {
+//DeleteDriver to delete selected entry
+func DeleteDriver(db *sql.DB, drid int) (sql.Result, error) {
 	if drid == -1 {
 		return db.Exec(fmt.Sprintf("truncate table driver"))
 	}
@@ -41,23 +41,24 @@ func deleteDriver(db *sql.DB, drid int) (sql.Result, error) {
 	return db.Exec(fmt.Sprintf("delete from driver where driver_id=%d", drid))
 }
 
-//to get selected entry
-func getDriver(db *sql.DB, drid int) (*sql.Rows, error) {
+//GetDriver to get selected entry
+func GetDriver(db *sql.DB, drid int) (*sql.Rows, error) {
 	if drid == -1 {
-		return db.Query(fmt.Sprintf("select *from driver"))
+		return db.Query(fmt.Sprintf("select * from driver"))
 	}
-	return db.Query(fmt.Sprintf("select *from driver where driver_id=%d", drid))
+	return db.Query(fmt.Sprintf("select * from driver where driver_id=%d", drid))
 }
 
-//get driver by vendor_id
-func getDriverbyVen(db *sql.DB, venid, drid int) (*sql.Rows, error) {
+//GetDriverbyVen get driver by vendor_id
+func GetDriverbyVen(db *sql.DB, drid int, venid int) (*sql.Rows, error) {
 	if venid == -1 {
-		return db.Query(fmt.Sprintf("select *from driver where vendor_id=%d", venid))
+		return db.Query(fmt.Sprintf("select * from driver where vendor_id=%d", venid))
 	}
-	return db.Query(fmt.Sprintf("select *from driver where driver_id=%d AND vendor_id=%d", drid, venid))
+	return db.Query(fmt.Sprintf("select * from driver where driver_id=%d AND vendor_id=%d", drid, venid))
 }
 
-//to update selected entry
-func updateDriver(db *sql.DB, query string) (sql.Result, error) {
+//UpdateDriver to update selected entry
+func UpdateDriver(db *sql.DB, query string) (sql.Result, error) {
+	fmt.Println(query)
 	return db.Exec(query)
 }
