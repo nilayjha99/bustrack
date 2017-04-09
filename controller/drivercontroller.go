@@ -6,6 +6,7 @@ import (
 	"bustrack/tools"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	_ "github.com/lib/pq" //for postgres driver
@@ -35,7 +36,7 @@ func CreateDriver(c echo.Context) (err error) {
 //DeleteDriver delete the driver by id
 func DeleteDriver(c echo.Context) (err error) {
 	// db := dbs.GetDB()
-	result, err := models.DeleteDriver(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.DeleteDriver(dbs.DB, stringtoInt(c.Param("drid")))
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
@@ -45,7 +46,7 @@ func DeleteDriver(c echo.Context) (err error) {
 //GetDriver get the driver by id
 func GetDriver(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetDriver(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.GetDriver(dbs.DB, stringtoInt(c.Param("drid")))
 	tools.PanicIf(err)
 	drs := make([]models.Driver, 0.0)
 	dr := models.Driver{}
@@ -76,21 +77,27 @@ func GetDriverbyVendor(c echo.Context) (err error) {
 
 //UpdateDrivers update the vendor by id
 func UpdateDrivers(c echo.Context) (err error) {
-	fmt.Println(c.FormValue("email"))
-	fmt.Println(c.FormValue("name"))
-	fmt.Println(c.FormValue("address"))
-	fmt.Println(c.FormValue("password"))
-	fmt.Println(c.FormValue("contact"))
-	fmt.Println(c.FormValue("venid"))
-	orm := map[string]string{
-		"email":     c.FormValue("email"),
-		"name":      c.FormValue("name"),
-		"address":   c.FormValue("address"),
-		"password":  c.FormValue("password"),
-		"contact":   c.FormValue("contact"),
-		"vendor_id": c.FormValue("venid"),
+	dr := &models.Driver{
+		Driverid: stringtoInt(c.FormValue("drid")),
+		Email:    c.FormValue("email"),
+		Vendorid: stringtoInt(c.FormValue("venid")),
+		Name:     c.FormValue("name"),
+		Address:  c.FormValue("address"),
+		Password: c.FormValue("password"),
+		Contact:  c.FormValue("contact"),
 	}
-	query := tools.UpdateBuilder("driver", orm, "driver_id", c.FormValue("drid"))
+	if err = c.Bind(dr); err != nil {
+		return err
+	}
+	orm := map[string]string{
+		"email":     dr.Email,
+		"name":      dr.Name,
+		"address":   dr.Address,
+		"password":  dr.Password,
+		"contact":   dr.Contact,
+		"vendor_id": strconv.Itoa(dr.Vendorid),
+	}
+	query := tools.UpdateBuilder("driver", orm, "driver_id", strconv.Itoa(dr.Driverid))
 	//db := dbs.GetDB()
 	result, err := models.UpdateDriver(dbs.DB, query)
 	if err != nil {

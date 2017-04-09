@@ -9,17 +9,17 @@ import (
 
 //Route struct for crud
 type Route struct {
-	Routeid        int
-	Organizationid int
-	Source         string
-	Destination    string
-	Coords         string
+	Routeid        int    `json:"routeid"`
+	Organizationid int    `json:"orgid"`
+	Source         string `json:"source"`
+	Destination    string `json:"destination"`
+	Coords         string `json:"coords"`
 }
 
-//to execute normal insert queries
-func insertRoute(db *sql.DB, route *Route) (sql.Result, error) {
+//InsertRoute to execute normal insert queries
+func InsertRoute(db *sql.DB, route *Route) (sql.Result, error) {
 	return db.Exec(
-		fmt.Sprintf("insert into route(organization_id, source,  destination,coords) values(%d,%s,%s,%s)",
+		fmt.Sprintf("insert into route(organization_id, source,  destination,coords) values(%d,'%s','%s','%s')",
 			route.Organizationid,
 			route.Source,
 			route.Destination,
@@ -28,8 +28,8 @@ func insertRoute(db *sql.DB, route *Route) (sql.Result, error) {
 	)
 }
 
-//to delete selected entry
-func deleteRoute(db *sql.DB, routeid int) (sql.Result, error) {
+//DeleteRoute to delete selected entry
+func DeleteRoute(db *sql.DB, routeid int) (sql.Result, error) {
 	if routeid == -1 {
 		return db.Exec(fmt.Sprintf("truncate table route"))
 	}
@@ -38,22 +38,23 @@ func deleteRoute(db *sql.DB, routeid int) (sql.Result, error) {
 
 }
 
-//to get selected entry
-func getRoute(db *sql.DB, routeid int) (*sql.Rows, error) {
+//GetRoute to get selected entry
+func GetRoute(db *sql.DB, routeid int) (*sql.Rows, error) {
 	if routeid == -1 {
-		return db.Query(fmt.Sprintf("select *from route"))
+		return db.Query(fmt.Sprintf("select * from route"))
 	}
-	return db.Query(fmt.Sprintf("select *from route where route_id=%d", routeid))
+	return db.Query(fmt.Sprintf("select * from route where route_id=%d", routeid))
 }
 
-func getRouteOrg(db *sql.DB, orgid, routeid int) (*sql.Rows, error) {
+//GetRouteOrg get the route by Organizationid
+func GetRouteOrg(db *sql.DB, orgid, routeid int) (*sql.Rows, error) {
 	if routeid == -1 {
 		return db.Query(fmt.Sprintf("select *from route where organization_id=%d", orgid))
 	}
 	return db.Query(fmt.Sprintf("select *from route where route_id=%d AND organization_id=%d", routeid, orgid))
 }
 
-//to update selected entry
-func updateRoute(db *sql.DB, query string) (sql.Result, error) {
+//UpdateRoute to update selected entry
+func UpdateRoute(db *sql.DB, query string) (sql.Result, error) {
 	return db.Exec(query)
 }

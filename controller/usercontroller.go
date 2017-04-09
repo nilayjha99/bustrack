@@ -6,13 +6,14 @@ import (
 	"bustrack/tools"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	_ "github.com/lib/pq" //for postgres driver
 )
 
-// CreateUSer create user
-func CreateUSer(c echo.Context) (err error) {
+// CreateUser create user
+func CreateUser(c echo.Context) (err error) {
 	user := &models.Users{
 		Email:    c.FormValue("email"),
 		Password: c.FormValue("password"),
@@ -33,7 +34,7 @@ func CreateUSer(c echo.Context) (err error) {
 //DeleteUser delete the user by id
 func DeleteUser(c echo.Context) (err error) {
 	// db := dbs.GetDB()
-	result, err := models.DeleteUser(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.DeleteUser(dbs.DB, stringtoInt(c.Param("userid")))
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
@@ -43,7 +44,7 @@ func DeleteUser(c echo.Context) (err error) {
 //GetUser get the vendor by id
 func GetUser(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetUsers(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.GetUsers(dbs.DB, stringtoInt(c.Param("userid")))
 	tools.PanicIf(err)
 	usrs := make([]models.Users, 0.0)
 	usr := models.Users{}
@@ -58,8 +59,6 @@ func GetUser(c echo.Context) (err error) {
 
 //GetUserOrg get user organization
 func GetUserOrg(c echo.Context) (err error) {
-	fmt.Println("orgid:", c.QueryParam("orgid"))
-	fmt.Println("userid:", c.QueryParam("userid"))
 	result, err := models.GetUserOrg(dbs.DB, stringtoInt(c.QueryParam("orgid")), stringtoInt(c.QueryParam("userid")))
 	tools.PanicIf(err)
 	usrs := make([]models.Users, 0.0)
@@ -75,12 +74,21 @@ func GetUserOrg(c echo.Context) (err error) {
 
 //UpdateUser update the vendor by id
 func UpdateUser(c echo.Context) (err error) {
-	orm := map[string]string{
-		"email":           c.FormValue("email"),
-		"password":        c.FormValue("password"),
-		"organization_id": c.FormValue("orgid"),
+	user := &models.Users{
+		Userid:   stringtoInt(c.FormValue("userid")),
+		Email:    c.FormValue("email"),
+		Password: c.FormValue("password"),
+		Orgid:    stringtoInt(c.FormValue("orgid")),
 	}
-	query := tools.UpdateBuilder("users", orm, "user_id", c.FormValue("userid"))
+	if err = c.Bind(user); err != nil {
+		return err
+	}
+	orm := map[string]string{
+		"email":           user.Email,
+		"password":        user.Password,
+		"organization_id": strconv.Itoa(user.Orgid),
+	}
+	query := tools.UpdateBuilder("users", orm, "user_id", strconv.Itoa(user.Userid))
 	//db := dbs.GetDB()
 	result, err := models.UpdateUsers(dbs.DB, query)
 	if err != nil {

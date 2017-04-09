@@ -7,4 +7,7 @@ func Route(e *echo.Echo) {
 	OrgRoute(e)
 	VendorRoute(e)
 	DriverRoute(e)
+	UserRoute(e)
+	PermUserRoute(e)
+	RouteRoute(e)
 }

@@ -9,10 +9,10 @@ import (
 
 //Users struct for crud
 type Users struct {
-	Userid   int
-	Email    string
-	Password string
-	Orgid    int
+	Userid   int    `json:"userid"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Orgid    int    `json:"orgid"`
 }
 
 //InsertUser to execute normal insert queries

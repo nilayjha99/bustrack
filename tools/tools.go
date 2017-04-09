@@ -23,7 +23,7 @@ func UpdateBuilder(tablename string, attr map[string]string, col string, val str
 
 	base = strings.TrimSuffix(base, ", ")
 	//if (strings.Compare(col, "")) != 0 {
-	base += fmt.Sprintf(" where %s=%s", col, val)
+	base += fmt.Sprintf(" where %s='%s'", col, val)
 	//}
 	return base
 }

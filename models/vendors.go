@@ -10,12 +10,12 @@ import (
 //Vendor struct for crud
 type Vendor struct {
 	//for crud in organization
-	Vendorid int
-	Email    string
-	Name     string
-	Address  string
-	Contact  string
-	Orgid    int
+	Vendorid int    `json:"venid"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Contact  string `json:"contact"`
+	Orgid    int    `json:"orgid"`
 }
 
 //InsertVen to execute normal insert queries

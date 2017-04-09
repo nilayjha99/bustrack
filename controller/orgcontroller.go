@@ -6,10 +6,16 @@ import (
 	"bustrack/tools"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	_ "github.com/lib/pq" //for postgres driver
 )
+
+func stringtoInt(s string) int {
+	str, _ := strconv.Atoi(s)
+	return str
+}
 
 // CreateOrganization create organization
 func CreateOrganization(c echo.Context) (err error) {
@@ -34,7 +40,7 @@ func CreateOrganization(c echo.Context) (err error) {
 //DeleteOraganization delete the organization by id
 func DeleteOraganization(c echo.Context) (err error) {
 	// db := dbs.GetDB()
-	result, err := models.DeleteOrg(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.DeleteOrg(dbs.DB, stringtoInt(c.Param("orgid")))
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
@@ -44,7 +50,7 @@ func DeleteOraganization(c echo.Context) (err error) {
 //GetOrganization get the organization by id
 func GetOrganization(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetOrg(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.GetOrg(dbs.DB, stringtoInt(c.Param("orgid")))
 	tools.PanicIf(err)
 	orgs := make([]models.Organization, 0.0)
 	org := models.Organization{}
@@ -60,21 +66,27 @@ func GetOrganization(c echo.Context) (err error) {
 //UpdateOraganization update the organization by id
 func UpdateOraganization(c echo.Context) (err error) {
 	org := &models.Organization{
+		Orgid:    stringtoInt(c.FormValue("orgid")),
 		Email:    c.FormValue("email"),
 		Name:     c.FormValue("name"),
 		Address:  c.FormValue("address"),
 		Password: c.FormValue("password"),
 		Contact:  c.FormValue("contact"),
 	}
-	orm := map[string]string{
-		"email":    org.Email,    //"nilayjha@gmail.com",
-		"name":     org.Name,     //"nilayjha",
-		"address":  org.Address,  //"mehsana",
-		"password": org.Password, // "nilay",
-		"contact":  org.Contact,  //"\"office\"=>\"7874969553\"",
+	if err = c.Bind(org); err != nil {
+		return err
 	}
-
-	query := tools.UpdateBuilder("organization", orm, "organization_id", c.Param("orgid"))
+	orm := map[string]string{
+		"email":    org.Email,
+		"name":     org.Name,
+		"address":  org.Address,
+		"password": org.Password,
+		"contact":  org.Contact,
+	}
+	for key, value := range orm {
+		fmt.Println(key, "=", value)
+	}
+	query := tools.UpdateBuilder("organization", orm, "organization_id", strconv.Itoa(org.Orgid))
 	//db := dbs.GetDB()
 	result, err := models.UpdateOrg(dbs.DB, query)
 	if err != nil {

@@ -12,11 +12,6 @@ import (
 	_ "github.com/lib/pq" //for postgres driver
 )
 
-func stringtoInt(s string) int {
-	str, _ := strconv.Atoi(s)
-	return str
-}
-
 // CreateVender create vender
 func CreateVender(c echo.Context) (err error) {
 	ven := &models.Vendor{
@@ -41,7 +36,7 @@ func CreateVender(c echo.Context) (err error) {
 //DeleteVendor delete the vendor by id
 func DeleteVendor(c echo.Context) (err error) {
 	// db := dbs.GetDB()
-	result, err := models.DeleteVen(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.DeleteVen(dbs.DB, stringtoInt(c.Param("venid")))
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
@@ -51,7 +46,7 @@ func DeleteVendor(c echo.Context) (err error) {
 //GetVendor get the vendor by id
 func GetVendor(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetVen(dbs.DB, stringtoInt(c.Param("id")))
+	result, err := models.GetVen(dbs.DB, stringtoInt(c.Param("venid")))
 	tools.PanicIf(err)
 	vens := make([]models.Vendor, 0.0)
 	ven := models.Vendor{}
@@ -85,11 +80,15 @@ func GetVendorOrg(c echo.Context) (err error) {
 //UpdateVendor update the vendor by id
 func UpdateVendor(c echo.Context) (err error) {
 	ven := &models.Vendor{
-		Email:   c.FormValue("email"),
-		Name:    c.FormValue("name"),
-		Address: c.FormValue("address"),
-		Contact: c.FormValue("contact"),
-		Orgid:   stringtoInt(c.FormValue("orgid")),
+		Vendorid: stringtoInt(c.FormValue("venid")),
+		Email:    c.FormValue("email"),
+		Name:     c.FormValue("name"),
+		Address:  c.FormValue("address"),
+		Contact:  c.FormValue("contact"),
+		Orgid:    stringtoInt(c.FormValue("orgid")),
+	}
+	if err = c.Bind(ven); err != nil {
+		return err
 	}
 	orm := map[string]string{
 		"email":           ven.Email,
@@ -98,8 +97,7 @@ func UpdateVendor(c echo.Context) (err error) {
 		"contact":         ven.Contact,
 		"organization_id": strconv.Itoa(ven.Orgid),
 	}
-	query := tools.UpdateBuilder("vendor", orm, "vendor_id", c.FormValue("venid"))
-	fmt.Println(c.FormValue("email") + "aaa")
+	query := tools.UpdateBuilder("vendor", orm, "vendor_id", strconv.Itoa(ven.Vendorid))
 	//db := dbs.GetDB()
 	result, err := models.UpdateVen(dbs.DB, query)
 	if err != nil {

@@ -9,13 +9,13 @@ import (
 
 //Driver struct for crud
 type Driver struct {
-	Driverid int
-	Email    string
-	Vendorid int
-	Name     string
-	Address  string
-	Password string
-	Contact  string
+	Driverid int    `json:"drid"`
+	Email    string `json:"email"`
+	Vendorid int    `json:"venid"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Password string `json:"password"`
+	Contact  string `json:"contact"`
 }
 
 //InsertDriver to execute normal insert queries
