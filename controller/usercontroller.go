@@ -28,7 +28,10 @@ func CreateUser(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, user)
+	if result != nil {
+		return c.JSON(http.StatusCreated, user)
+	}
+	return c.JSON(http.StatusNotFound, "no user created")
 }
 
 //DeleteUser delete the user by id

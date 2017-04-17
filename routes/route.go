@@ -10,4 +10,6 @@ func Route(e *echo.Echo) {
 	UserRoute(e)
 	PermUserRoute(e)
 	RouteRoute(e)
+	TripRoute(e)
+	BusRoute(e)
 }
