@@ -34,7 +34,7 @@ func CreateOrganization(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result.LastInsertId())
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, org)
+	return c.JSON(http.StatusCreated, orgs)
 }
 
 //DeleteOraganization delete the organization by id

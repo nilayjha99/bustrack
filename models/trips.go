@@ -70,6 +70,6 @@ func UpdateTrip(db *sql.DB, query string) (sql.Result, error) {
 	return db.Exec(query)
 }
 
-// func updateTripDetails(db *sql.DB, values string, id string) (sql.Result, error) {
-// 	return db.Exec(fmt.Sprintf("update trip set details = details || %s ::hstore where trip_unique_id=%s"))
-// }
+func updateTripDetails(db *sql.DB, values string, tripid int) (sql.Result, error) {
+	return db.Exec(fmt.Sprintf("update trip set details = details || %s ::hstore where trip_id=%d", values, tripid))
+}
