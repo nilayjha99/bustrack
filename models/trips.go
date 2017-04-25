@@ -70,6 +70,7 @@ func UpdateTrip(db *sql.DB, query string) (sql.Result, error) {
 	return db.Exec(query)
 }
 
-func updateTripDetails(db *sql.DB, values string, tripid int) (sql.Result, error) {
+//UpdateTripDetails to add current co-ordinates
+func UpdateTripDetails(db *sql.DB, values string, tripid int) (sql.Result, error) {
 	return db.Exec(fmt.Sprintf("update trip set details = details || %s ::hstore where trip_id=%d", values, tripid))
 }
