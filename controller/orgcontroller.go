@@ -34,7 +34,10 @@ func CreateOrganization(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, org)
+	if result != nil {
+		return c.JSON(http.StatusCreated, "Organization id is created")
+	}
+	return c.JSON(http.StatusNotFound, "Organization id is not created")
 }
 
 //DeleteOraganization delete the organization by id
@@ -42,9 +45,13 @@ func DeleteOraganization(c echo.Context) (err error) {
 	// db := dbs.GetDB()
 	result, err := models.DeleteOrg(dbs.DB, stringtoInt(c.Param("orgid")))
 	tools.PanicIf(err)
+
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetOrganization get the organization by id
@@ -95,5 +102,8 @@ func UpdateOraganization(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

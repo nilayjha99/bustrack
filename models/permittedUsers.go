@@ -35,8 +35,8 @@ func DeletePerm(db *sql.DB, email string) (sql.Result, error) {
 }
 
 //GetPerm to get selected entry
-func GetPerm(db *sql.DB) (*sql.Rows, error) {
-	return db.Query(fmt.Sprintf("select * from permittedusers"))
+func GetPerm(db *sql.DB, email string) (*sql.Rows, error) {
+	return db.Query(fmt.Sprintf("select * from permittedusers where email='%s'", email))
 }
 
 //GetPermOrg get permittedusers by organization

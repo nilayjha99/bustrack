@@ -30,7 +30,10 @@ func CreateVender(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, ven)
+	if result != nil {
+		return c.JSON(http.StatusCreated, "Vendor is created")
+	}
+	return c.JSON(http.StatusNotFound, "Vendor is not created")
 }
 
 //DeleteVendor delete the vendor by id
@@ -40,7 +43,10 @@ func DeleteVendor(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetVendor get the vendor by id
@@ -106,5 +112,8 @@ func UpdateVendor(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

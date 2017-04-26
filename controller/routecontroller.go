@@ -29,7 +29,10 @@ func CreateRoute(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, route)
+	if result != nil {
+		return c.JSON(http.StatusCreated, "Route is created")
+	}
+	return c.JSON(http.StatusNotFound, "Route is not created")
 }
 
 //DeleteRoute delete the route by id
@@ -39,7 +42,10 @@ func DeleteRoute(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetRoute get the route by id
@@ -104,5 +110,8 @@ func UpdateRoute(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

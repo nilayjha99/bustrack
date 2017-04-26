@@ -30,7 +30,10 @@ func CreateDriver(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, dr)
+	if result != nil {
+		return c.JSON(http.StatusCreated, "Driverid is created")
+	}
+	return c.JSON(http.StatusNotFound, "Driverid is not created")
 }
 
 //DeleteDriver delete the driver by id
@@ -40,7 +43,10 @@ func DeleteDriver(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetDriver get the driver by id
@@ -66,13 +72,15 @@ func GetDriverbyVendor(c echo.Context) (err error) {
 	result, err := models.GetDriverbyVen(dbs.DB, stringtoInt(c.QueryParam("drid")), stringtoInt(c.QueryParam("venid")))
 	tools.PanicIf(err)
 	fmt.Println("result:", result, "result end")
+	drs := make([]models.Driver, 0.0)
 	dr := models.Driver{}
 	for result.Next() {
 		result.Scan(&dr.Driverid, &dr.Email, &dr.Vendorid, &dr.Name, &dr.Address, &dr.Password, &dr.Contact)
 		fmt.Println(dr.Driverid, dr.Email, dr.Vendorid, dr.Name, dr.Address, dr.Password, dr.Contact)
+		drs = append(drs, dr)
 	}
 	//	dbs.CloseDB(db)
-	return c.JSON(http.StatusOK, dr)
+	return c.JSON(http.StatusOK, drs)
 }
 
 //UpdateDrivers update the vendor by id
@@ -106,5 +114,8 @@ func UpdateDrivers(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

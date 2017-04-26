@@ -30,9 +30,9 @@ func CreateTrip(c echo.Context) (err error) {
 	trip.Tripid = result
 	// dbs.CloseDB(db)
 	if result != 0 {
-		return c.JSON(http.StatusCreated, trip)
+		return c.JSON(http.StatusCreated, result)
 	}
-	return c.JSON(http.StatusNotFound, "no trip created")
+	return c.JSON(http.StatusNotFound, "Trip is not created")
 }
 
 //DeleteTrip delete the trip by id
@@ -42,7 +42,10 @@ func DeleteTrip(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetTrip get the trip by id
@@ -89,5 +92,8 @@ func UpdateTrip(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

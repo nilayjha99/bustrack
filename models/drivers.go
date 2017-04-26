@@ -51,7 +51,7 @@ func GetDriver(db *sql.DB, drid int) (*sql.Rows, error) {
 
 //GetDriverbyVen get driver by vendor_id
 func GetDriverbyVen(db *sql.DB, drid int, venid int) (*sql.Rows, error) {
-	if venid == -1 {
+	if drid == -1 {
 		return db.Query(fmt.Sprintf("select * from driver where vendor_id=%d", venid))
 	}
 	return db.Query(fmt.Sprintf("select * from driver where driver_id=%d AND vendor_id=%d", drid, venid))

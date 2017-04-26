@@ -23,3 +23,9 @@ DROP FUNCTION function_name();
 //// drop trigger
 
 DROP TRIGGER trigger_name ON table;
+
+
+
+
+
+

@@ -38,9 +38,9 @@ func DeleteBus(db *sql.DB, busid int) (sql.Result, error) {
 //GetBus to get selected entry
 func GetBus(db *sql.DB, busid int) (*sql.Rows, error) {
 	if busid == -1 {
-		return db.Query(fmt.Sprintf("select *from bus"))
+		return db.Query(fmt.Sprintf("select * from bus"))
 	}
-	return db.Query(fmt.Sprintf("select *from bus where bus_id=%d", busid))
+	return db.Query(fmt.Sprintf("select * from bus where bus_id=%d", busid))
 }
 
 //GetBusVen get the bus by vendor

@@ -52,7 +52,7 @@ func GetVen(db *sql.DB, venid int) (*sql.Rows, error) {
 //GetVenOrg get the vendor organization
 func GetVenOrg(db *sql.DB, orgid, venid int) (*sql.Rows, error) {
 	if venid == -1 {
-		return db.Query(fmt.Sprintf("select * from vendor organization_id=%d", orgid))
+		return db.Query(fmt.Sprintf("select * from vendor where organization_id=%d", orgid))
 	}
 	return db.Query(fmt.Sprintf("select * from vendor where vendor_id=%d AND organization_id=%d", venid, orgid))
 }

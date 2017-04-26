@@ -28,9 +28,9 @@ func CreateBus(c echo.Context) (err error) {
 	fmt.Println("result:", result)
 	// dbs.CloseDB(db)
 	if result != nil {
-		return c.JSON(http.StatusCreated, bus)
+		return c.JSON(http.StatusCreated, "Busid is created")
 	}
-	return c.JSON(http.StatusNotFound, "no Busid created")
+	return c.JSON(http.StatusNotFound, "Busid is not created")
 }
 
 //DeleteBus delete the trip by id
@@ -40,7 +40,10 @@ func DeleteBus(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetBus get the trip by id
@@ -100,5 +103,8 @@ func UpdateBus(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

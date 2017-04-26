@@ -27,7 +27,10 @@ func CreatePermUser(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	// dbs.CloseDB(db)
-	return c.JSON(http.StatusCreated, pmuser)
+	if result != nil {
+		return c.JSON(http.StatusCreated, "Permitted user is created")
+	}
+	return c.JSON(http.StatusNotFound, "Permitted user is not created")
 }
 
 //DeletePermUser delete the user by id
@@ -37,13 +40,16 @@ func DeletePermUser(c echo.Context) (err error) {
 	tools.PanicIf(err)
 	fmt.Println(result)
 	//dbs.CloseDB(db)
-	return c.NoContent(http.StatusNoContent)
+	if result != nil {
+		return c.JSON(http.StatusOK, "Deleted")
+	}
+	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
 //GetPermUser get the vendor by id
-func GetPermUser(c echo.Context) (err error) {
+func GetPermUserByEmail(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetPerm(dbs.DB)
+	result, err := models.GetPerm(dbs.DB, c.Param("email"))
 	tools.PanicIf(err)
 	pmusrs := make([]models.Permit, 0.0)
 	pmusr := models.Permit{}
@@ -93,5 +99,8 @@ func UpdatePermUser(c echo.Context) (err error) {
 	//tools.PanicIf(err)
 	//dbs.CloseDB(db)
 	fmt.Println("result:", result)
-	return c.JSON(http.StatusOK, "updated")
+	if result != nil {
+		return c.JSON(http.StatusOK, "updated")
+	}
+	return c.JSON(http.StatusNotFound, "Not updated")
 }

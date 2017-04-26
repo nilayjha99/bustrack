@@ -37,7 +37,7 @@ func handleUDPConnection(conn *net.UDPConn) {
 }
 
 func main() {
-	hostName := getCurretIp()
+	hostName := getCurretIP()
 	portNum := "8085"
 	service := hostName + ":" + portNum
 
@@ -54,7 +54,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("UDP server up and listening on port 6000")
+	fmt.Println("UDP server up and listening on port 8085")
 
 	defer ln.Close()
 
@@ -65,7 +65,7 @@ func main() {
 
 }
 
-func getCurretIp() string {
+func getCurretIP() string {
 	addrs, err := net.InterfaceAddrs()
 	var currentIp string = "0.0.0.0"
 	if err != nil {
