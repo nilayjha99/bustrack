@@ -13,7 +13,7 @@ type Route struct {
 	Organizationid int    `json:"orgid"`
 	Source         string `json:"source"`
 	Destination    string `json:"destination"`
-	Coords         string `json:"coords"`
+	Coords         string `json:"file"`
 }
 
 //InsertRoute to execute normal insert queries
@@ -48,10 +48,12 @@ func GetRoute(db *sql.DB, routeid int) (*sql.Rows, error) {
 
 //GetRouteOrg get the route by Organizationid
 func GetRouteOrg(db *sql.DB, orgid, routeid int) (*sql.Rows, error) {
+	fmt.Println("orid:", orgid)
+	fmt.Println("roid:", routeid)
 	if routeid == -1 {
-		return db.Query(fmt.Sprintf("select *from route where organization_id=%d", orgid))
+		return db.Query(fmt.Sprintf("select * from route where organization_id=%d", orgid))
 	}
-	return db.Query(fmt.Sprintf("select *from route where route_id=%d AND organization_id=%d", routeid, orgid))
+	return db.Query(fmt.Sprintf("select * from route where route_id=%d AND organization_id=%d", routeid, orgid))
 }
 
 //UpdateRoute to update selected entry

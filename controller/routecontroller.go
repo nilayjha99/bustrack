@@ -5,7 +5,9 @@ import (
 	"bustrack/models"
 	"bustrack/tools"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/labstack/echo"
@@ -18,12 +20,36 @@ func CreateRoute(c echo.Context) (err error) {
 		Organizationid: stringtoInt(c.FormValue("orgid")),
 		Source:         c.FormValue("source"),
 		Destination:    c.FormValue("destination"),
-		Coords:         c.FormValue("coords"),
+		//Coords:         c.FormFile("file"),
 	}
 
 	if err = c.Bind(route); err != nil {
 		return err
 	}
+	file, err := c.FormFile("file")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Destination
+	name := "map/" + file.Filename
+	dst, err := os.Create(name)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	route.Coords = name
 	// db := dbs.GetDB()
 	result, err := models.InsertRoute(dbs.DB, route)
 	tools.PanicIf(err)

@@ -8,7 +8,7 @@ import (
 
 // PermUserRoute multi route
 func PermUserRoute(e *echo.Echo) {
-	e.GET("/permuser/get/:email", controller.GetPermUserByEmail)
+	e.GET("/permuser/get", controller.GetPermUserByEmail)
 	e.GET("/permuser/get/:orgid", controller.GetPermUserOrg)
 	e.POST("/permuser/add", controller.CreatePermUser)
 	e.PUT("/permuser/update", controller.UpdatePermUser)

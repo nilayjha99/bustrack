@@ -46,10 +46,11 @@ func DeletePermUser(c echo.Context) (err error) {
 	return c.JSON(http.StatusNotFound, "Not Deleted")
 }
 
-//GetPermUser get the vendor by id
+//GetPermUserByEmail get the vendor by id
 func GetPermUserByEmail(c echo.Context) (err error) {
 	//	db := dbs.GetDB()
-	result, err := models.GetPerm(dbs.DB, c.Param("email"))
+	fmt.Println("email:", c.QueryParam("email"))
+	result, err := models.GetPerm(dbs.DB, c.QueryParam("email"))
 	tools.PanicIf(err)
 	pmusrs := make([]models.Permit, 0.0)
 	pmusr := models.Permit{}
