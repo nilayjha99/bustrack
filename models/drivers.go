@@ -57,6 +57,11 @@ func GetDriverbyVen(db *sql.DB, drid int, venid int) (*sql.Rows, error) {
 	return db.Query(fmt.Sprintf("select * from driver where driver_id=%d AND vendor_id=%d", drid, venid))
 }
 
+//DriverLogin for login
+func DriverLogin(db *sql.DB, email string, password string) (*sql.Rows, error) {
+	return db.Query(fmt.Sprintf("select *from driver where email='%s' and passeord='%s'", email, password))
+}
+
 //UpdateDriver to update selected entry
 func UpdateDriver(db *sql.DB, query string) (sql.Result, error) {
 	fmt.Println(query)

@@ -83,6 +83,22 @@ func GetDriverbyVendor(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, drs)
 }
 
+//Login for driver
+func Login(c echo.Context) (err error) {
+	//	db := dbs.GetDB()
+	result, err := models.DriverLogin(dbs.DB, c.QueryParam("email"), c.QueryParam("password"))
+	tools.PanicIf(err)
+	drs := make([]models.Driver, 0.0)
+	dr := models.Driver{}
+	for result.Next() {
+		result.Scan(&dr.Driverid, &dr.Email, &dr.Vendorid, &dr.Name, &dr.Address, &dr.Password, &dr.Contact)
+		fmt.Println(dr.Driverid, dr.Email, dr.Vendorid, dr.Name, dr.Address, dr.Password, dr.Contact)
+		drs = append(drs, dr)
+	}
+	//	dbs.CloseDB(db)
+	return c.JSON(http.StatusOK, drs)
+}
+
 //UpdateDrivers update the vendor by id
 func UpdateDrivers(c echo.Context) (err error) {
 	dr := &models.Driver{
