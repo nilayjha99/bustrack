@@ -21,11 +21,10 @@ func InsertTrip(db *sql.DB, tr *Trip) (int, error) {
 	var tripID int
 
 	err := db.QueryRow(
-		fmt.Sprintf("insert into trip(route_id, driver_id,  bus_id, details) values(%d,%d,%d,'%s')  RETURNING trip_id",
+		fmt.Sprintf("insert into trip(route_id, driver_id,  bus_id ) values(%d,%d,%d)  RETURNING trip_id",
 			tr.Routeid,
 			tr.Driverid,
 			tr.Busid,
-			tr.Details,
 		),
 	).Scan(&tripID)
 
@@ -72,5 +71,5 @@ func UpdateTrip(db *sql.DB, query string) (sql.Result, error) {
 
 //UpdateTripDetails to add current co-ordinates
 func UpdateTripDetails(db *sql.DB, values string, tripid int) (sql.Result, error) {
-	return db.Exec(fmt.Sprintf("update trip set details = details || %s ::hstore where trip_id=%d", values, tripid))
+	return db.Exec(fmt.Sprintf("update trip set details = details || ARRAY['%s' ::hstore] where trip_id=%d", values, tripid))
 }

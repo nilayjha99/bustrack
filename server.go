@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bustrack/dbs"
+	"bustrack/models"
 	"bustrack/myredis"
 	"bustrack/routes"
 	"context"
@@ -131,24 +133,23 @@ func GetCurretIp() string {
 //------------------------------udp server block ends here-----------------//
 //UpdateTripCoords is to add current location to existing trip
 func UpdateTripCoords(locationstamp string) {
-	var coords, topic string
+	var coords, topic, tripid string
 	temp := strings.Split(locationstamp, "|")
 	topic = temp[0]
 	coords = temp[1]
 
+	//to publish to the redis topic
 	go publishToRedis(topic, coords)
-	//	tripid = strings.SplitAfter(topic, "trip")[1]
+	tripid = strings.SplitAfter(topic, "trip")[1]
 
-	// to publish to the redis topic
+	//to update things in database
+	go func() {
+		_, err := models.UpdateTripDetails(dbs.DB, coords, stringtoInt(tripid))
 
-	// to update things in database
-	// go func() {
-	// 	_, err := models.UpdateTripDetails(dbs.DB, coords, stringtoInt(tripid))
-	//
-	// 	if err != nil {
-	// 		fmt.Println("Error is", err)
-	// 	}
-	// }()
+		if err != nil {
+			fmt.Println("Error is", err)
+		}
+	}()
 
 }
 
