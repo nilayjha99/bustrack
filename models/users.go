@@ -46,8 +46,8 @@ func GetUsers(db *sql.DB, userid int) (*sql.Rows, error) {
 
 //GetUserOrg get the usr by organization
 func GetUserOrg(db *sql.DB, orgid, userid int) (*sql.Rows, error) {
-	if orgid == -1 {
-		return db.Query(fmt.Sprintf("select * from route where organization_id=%d", orgid))
+	if userid == -1 {
+		return db.Query(fmt.Sprintf("select * from users where organization_id=%d", orgid))
 	}
 	return db.Query(fmt.Sprintf("select * from users where user_id=%d AND organization_id=%d", userid, orgid))
 }
