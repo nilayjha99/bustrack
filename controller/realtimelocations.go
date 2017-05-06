@@ -4,41 +4,37 @@ import (
 	"bustrack/myredis"
 	"bytes"
 	"fmt"
-	"net/http"
-	"time"
+	"log"
+
+	"golang.org/x/net/websocket"
 
 	"github.com/labstack/echo"
 )
 
 // Stream is a function to stream real time responses
 func Stream(c echo.Context) error {
-	res := c.Response()
-	gone := res.CloseNotify()
-	res.Header().Set(echo.HeaderContentType, echo.MIMETextHTMLCharsetUTF8)
-	res.WriteHeader(http.StatusOK)
-	client := myredis.GetConnection()
 
-	ticker := time.NewTicker(1 * time.Second)
+	websocket.Handler(func(ws *websocket.Conn) {
+		client := myredis.GetConnection()
+		defer client.Close()
+		defer ws.Close()
 
-	defer ticker.Stop()
-	defer client.Close()
+		client.Send("SUBSCRIBE", GetTopic(c.Param("tripid")))
+		client.Flush()
 
-	client.Send("SUBSCRIBE", GetTopic(c.Param("tripid")))
-	client.Flush()
-	fmt.Fprint(res, "<pre><strong>Clock Stream</strong>\n\n<code>")
+		for {
+			// Write
+			result, _ := client.Receive()
+			if result != nil {
+				err := websocket.Message.Send(ws, fmt.Sprintf("%s\n", result))
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
 
-	for {
-		result, _ := client.Receive()
-		if result != nil {
-			fmt.Fprintf(res, "%s\n", result)
 		}
-		res.Flush()
-		select {
-		case <-ticker.C:
-		case <-gone:
-			break
-		}
-	}
+	}).ServeHTTP(c.Response(), c.Request())
+	return nil
 }
 
 //GetTopic is method to make topic string to SUBSCRIBE

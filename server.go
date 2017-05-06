@@ -138,18 +138,23 @@ func UpdateTripCoords(locationstamp string) {
 	topic = temp[0]
 	coords = temp[1]
 
-	//to publish to the redis topic
-	go publishToRedis(topic, coords)
-	tripid = strings.SplitAfter(topic, "trip")[1]
+	if strings.Compare(coords, "end") > 0 {
+		//to publish to the redis topic
+		go publishToRedis(topic, coords)
+		tripid = strings.SplitAfter(topic, "trip")[1]
 
-	//to update things in database
-	go func() {
-		_, err := models.UpdateTripDetails(dbs.DB, coords, stringtoInt(tripid))
+		//to update things in database
+		go func() {
+			_, err := models.UpdateTripDetails(dbs.DB, coords, stringtoInt(tripid))
 
-		if err != nil {
-			fmt.Println("Error is", err)
-		}
-	}()
+			if err != nil {
+				fmt.Println("Error is", err)
+			}
+		}()
+
+	} else {
+		go publishToRedis(topic, coords)
+	}
 
 }
 
